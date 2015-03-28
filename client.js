@@ -9,11 +9,13 @@ function Client(appname, username) {
   this.appname = appname;
   this.username = username;
   this.connection = null;
+  this.router = new Router();
 }
 
 util.inherits(Client, EventEmitter);
 
 Client.prototype.connect = function(url) {
+  var _this = this;
   if(url === undefined) {
     throw new Error('url required');
   }
@@ -26,6 +28,7 @@ Client.prototype.connect = function(url) {
   this.connection.on('message', function(topic, payload) {
     var message = JSON.parse(payload.toString());
     console.log('message', topic, message);
+    _this.router.route(topic, message);
   });
 }
 
