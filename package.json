@@ -19,6 +19,8 @@
     "url": "github"
   },
   "scripts": {
+    "build": "babel src --out-dir build",
+    "postinstall": "npm run build",
     "test": "echo \"Error: no test specified\" && exit 1"
   }
 }
