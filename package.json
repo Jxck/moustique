@@ -1,24 +1,24 @@
 {
   "name": "mqtt-router",
-  "version": "0.0.0",
   "description": "router for mqtt.js",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "repository": {
-    "type": "git",
-    "url": "github"
-  },
-  "keywords": [
-    "mqtt"
-  ],
+  "version": "0.0.0",
   "author": "Jxck",
-  "license": "MIT",
   "dependencies": {
     "path-to-regexp": "^1.0.3"
   },
   "devDependencies": {
     "babel": "^4.7.16"
+  },
+  "keywords": [
+    "mqtt"
+  ],
+  "license": "MIT",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "github"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
   }
 }
