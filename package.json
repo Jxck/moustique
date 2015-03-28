@@ -1,5 +1,5 @@
 {
-  "name": "mqtt-router",
+  "name": "moustique",
   "description": "router for mqtt.js",
   "version": "0.0.0",
   "author": "Jxck",
@@ -10,13 +10,15 @@
     "babel": "^4.7.16"
   },
   "keywords": [
-    "mqtt"
+    "mqtt",
+    "router",
+    "mosca"
   ],
   "license": "MIT",
   "main": "index.js",
   "repository": {
     "type": "git",
-    "url": "github"
+    "url": "git@github.com:Jxck/moustique.git"
   },
   "scripts": {
     "build": "babel src --out-dir build",
