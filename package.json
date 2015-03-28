@@ -14,5 +14,8 @@
     "mqtt"
   ],
   "author": "Jxck",
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "path-to-regexp": "^1.0.3"
+  }
 }
