@@ -1,14 +1,23 @@
 {
   "name": "moustique",
   "description": "router for mqtt.js",
-  "version": "0.0.1",
+  "version": "0.0.4",
   "author": "Jxck",
   "dependencies": {
+    "mqtt": "^1.1.2",
     "path-to-regexp": "^1.0.3"
   },
   "devDependencies": {
     "babel": "^4.7.16"
   },
+  "files": [
+    "README.md",
+    "index.js",
+    "package.json",
+    "src",
+    "build",
+    "test"
+  ],
   "keywords": [
     "mqtt",
     "router",
@@ -22,6 +31,7 @@
   },
   "scripts": {
     "build": "babel src --out-dir build",
+    "prepublish": "npm run build",
     "test": "echo \"Error: no test specified\" && exit 1"
   }
 }
