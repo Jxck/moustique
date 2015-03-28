@@ -1,45 +1,54 @@
-var pathToRegexp = require('path-to-regexp');
+import pathToRegexp from 'path-to-regexp';
 
-function Router() {
-  this.routings = [];
-};
-
-Router.prototype.topic = function(topic, callback) {
-  var keys = [];
-  var re = pathToRegexp(topic, keys);
-
-  function routing(_re, _keys, callback) {
-    return function(subscribedTopic, body) {
-      var result = _re.exec(subscribedTopic);
-
-      result.shift(); // ignore first, same as itself
-
-      // mapping of placeholder & value
-      var params = {}
-
-      _keys.forEach(function(key, i) {
-        params[key.name] = result[i];
-      });
-
-      return callback({
-        topic: subscribedTopic,
-        params: params,
-        body: body
-      });
-    }
+class Router {
+  constructor() {
+    this.routings = [];
   }
 
-  this.routings.push(routing(re, keys, callback));
-};
+  topic(topic, callback) {
+    let keys = [];
+    let re = pathToRegexp(topic, keys);
 
-Router.prototype.route = function(topic, message) {
-  for (var i = 0; i < this.routings.length; i ++) {
-    var routing = this.routings[i];
-    var result = routing(topic, message);
-    if (result !== null) {
-      return result;
+    function routing(_re, _keys, callback) {
+      return function(subscribedTopic, body) {
+        let result = _re.exec(subscribedTopic);
+        if (result === null) {
+          return null;
+        }
+
+        result.shift(); // ignore first same as subscribedTopic
+
+        let params = {};
+        _keys.forEach((key, i) => {
+          params[key.name] = result[i];
+        });
+
+        return callback({
+          topic: subscribedTopic,
+          params: params,
+          body: body
+        });
+      }
     }
-  }
-};
 
-module.exports = Router;
+    this.routings.push(routing(re, keys, callback));
+
+    let t = keys.reduce((pre, key) => {
+      return pre.replace(`:${key.name}?`, '#') // ? to #
+        .replace(`:${key.name}`, '+');
+    }, topic);
+    return t;
+  }
+
+  route(topic, message) {
+    for (let i = 0; i < this.routings.length; i ++) {
+      let routing = this.routings[i];
+      let result = routing(topic, message);
+      if (result !== null) {
+        return result;
+      }
+    };
+  }
+}
+
+export {Router}

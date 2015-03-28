@@ -1,48 +1,47 @@
-var EventEmitter = require('events').EventEmitter;
-var util = require('util');
-var mqtt = require('mqtt');
+import mqtt from 'mqtt';
+import pathToRegexp from 'path-to-regexp';
+import {EventEmitter} from 'events';
+import Router from './router';
 
-var Router = require('./router');
-
-function Client(appname, username) {
-  EventEmitter.call(this);
-  this.appname = appname;
-  this.username = username;
-  this.connection = null;
-  this.router = new Router();
-}
-
-util.inherits(Client, EventEmitter);
-
-Client.prototype.connect = function(url) {
-  var _this = this;
-  if(url === undefined) {
-    throw new Error('url required');
+class Client extends EventEmitter {
+  constructor(appname, username) {
+    this.appname = appname;
+    this.username = username;
+    this.router = new Router();
   }
-  this.connection = mqtt.connect(url, { clientId: this.username });
 
-  this.connection.on('connect', function() {
-    console.log('connect');
-  });
+  connect(url = `wss://${location.hostname}:3000`) {
+    this.connection = mqtt.connect(url, { clientId: this.username });
+    this.bindEvents();
+  }
 
-  this.connection.on('message', function(topic, payload) {
-    var message = JSON.parse(payload.toString());
-    console.log('message', topic, message);
-    _this.router.route(topic, message);
-  });
+  sub(topic, callback) {
+    console.assert(topic[0] !== '/', 'topic should not start with /');
+    let topic = `/${this.appname}/${topic}`;
+    console.log('add handler to', topic);
+    let t = this.router.topic(topic, callback);
+    console.log('subscribe', t);
+    this.connection.subscribe(t);
+  }
+
+  pub(topic, data, option = { qos: 0, retain: false }) {
+    console.assert(topic[0] !== '/', 'topic should not start with /');
+    let topic = `/${this.appname}/${topic}`;
+    console.log('publish', topic, data, option);
+    let message = JSON.stringify(data);
+    this.connection.publish(topic, message, option);
+  }
+
+  bindEvents() {
+    this.connection.on('connect', () => {
+      this.emit('connect');
+    });
+    this.connection.on('message', (topic, payload) => {
+      let message = JSON.parse(payload.toString());
+      console.log('message', topic, message);
+      this.router.route(topic, message);
+    });
+  }
 }
 
-Client.prototype.sub = function(topic, callback) {
-  var topic = util.format('/%s/%s', this.appname, this.topic);
-  console.log('add handler to', topic);
-  this.connection.subscribe(topic);
-}
-
-Client.prototype.pub = function(topic, data) {
-  var topic = util.format('/%s/%s', this.appname, this.topic);
-  console.log('publish', topic, data);
-  var message = JSON.stringify(data);
-  this.connection.publish(topic, message);
-}
-
-module.exports = Client;
+export {Client};
