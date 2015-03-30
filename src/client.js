@@ -10,8 +10,9 @@ class Client extends EventEmitter {
     this.router = new Router();
   }
 
-  connect(url = `wss://${location.hostname}:3000`) {
-    this.connection = mqtt.connect(url, { clientId: this.username });
+  connect(url = `wss://${location.hostname}:3000`, option = {}) {
+    option.clientId = this.username;
+    this.connection = mqtt.connect(url, option);
     this.bindEvents();
   }
 
