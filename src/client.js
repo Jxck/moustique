@@ -1,7 +1,7 @@
 import mqtt from 'mqtt';
 import pathToRegexp from 'path-to-regexp';
 import {EventEmitter} from 'events';
-import Router from './router';
+import {Router} from './router';
 
 class Client extends EventEmitter {
   constructor(appname, username) {
