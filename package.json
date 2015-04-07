@@ -4,6 +4,7 @@
   "version": "0.0.5",
   "author": "Jxck",
   "dependencies": {
+    "logmorphic": "0.0.3",
     "mqtt": "^1.1.2",
     "path-to-regexp": "^1.0.3"
   },

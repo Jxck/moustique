@@ -19,16 +19,16 @@ class Client extends EventEmitter {
   sub(topic, callback) {
     console.assert(topic[0] !== '/', 'topic should not start with /');
     let topic = `/${this.appname}/${topic}`;
-    console.log('add handler to', topic);
+    logger.info('add handler to', topic);
     let t = this.router.topic(topic, callback);
-    console.log('subscribe', t);
+    logger.info('subscribe', t);
     this.connection.subscribe(t);
   }
 
   pub(topic, data, option = { qos: 0, retain: false }) {
     console.assert(topic[0] !== '/', 'topic should not start with /');
     let topic = `/${this.appname}/${topic}`;
-    console.log('publish', topic, data, option);
+    logger.info('publish', topic, data, option);
     let message = JSON.stringify(data);
     this.connection.publish(topic, message, option);
   }
@@ -39,7 +39,7 @@ class Client extends EventEmitter {
     });
     this.connection.on('message', (topic, payload) => {
       let message = JSON.parse(payload.toString());
-      console.log('message', topic, message);
+      logger.info('message', topic, message);
       this.router.route(topic, message);
     });
   }
