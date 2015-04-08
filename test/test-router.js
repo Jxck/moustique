@@ -19,10 +19,10 @@ function sample() {
     assert(message.params.id, '1');
     assert(message.params.name, 'foo');
     assert(message.topic, '/id/1/name/foo');
-    assert(message.body, 'testdata');
+    deepEqual(message.body, { foo: 'bar' });
   });
 
-  router.route('/id/1/name/foo', 'testdata');
+  router.route('/id/1/name/foo', { foo: 'bar' });
 };
 
 function match() {
@@ -153,6 +153,41 @@ function match() {
       },
       message: 'test'
     },
+    {
+      sub: 'a',
+      pub: 'a',
+      params: {
+      },
+      message: 'test'
+    },
+    {
+      sub: '/',
+      pub: '/',
+      params: {
+      },
+      message: 'test'
+    },
+    {
+      sub: '',
+      pub: '',
+      params: {
+      },
+      message: 'test'
+    },
+    {
+      sub: '/',
+      pub: '',
+      params: {
+      },
+      message: 'test'
+    },
+    {
+      sub: '',
+      pub: '/',
+      params: {
+      },
+      message: 'test'
+    },
   ];
 
   let count = 0;
@@ -181,6 +216,10 @@ function unmatch() {
       sub: '/id/:id/name/:name',
       pub: '/id/1/name'
     },
+    {
+      sub: '/id/:id/:name/:age',
+      pub: '/id/1'
+    }
   ];
 
   testcase.forEach((test) => {
@@ -193,9 +232,32 @@ function unmatch() {
   });
 }
 
+function error() {
+  let router = new Router();
+
+  [null, undefined, {}, 1, NaN, function(){}].forEach((topic) => {
+    try {
+      router.topic(null, () => {});
+      throw new Error('cant be here');
+    } catch(err) {
+      assert(err instanceof TypeError, true);
+    }
+  });
+
+  [null, undefined, {}, 1, NaN, ''].forEach((callback) => {
+    try {
+      router.topic('/a', callback);
+      throw new Error('cant be here');
+    } catch(err) {
+      assert(err instanceof TypeError, true);
+    }
+  });
+}
+
 function run() {
   sample();
   match();
   unmatch();
+  error();
 };
 run();

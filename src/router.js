@@ -6,6 +6,12 @@ class Router {
   }
 
   topic(topic, callback) {
+    if (typeof topic !== 'string') {
+      throw new TypeError('topic should be string');
+    }
+    if (typeof callback !== 'function') {
+      throw new TypeError('callback function required');
+    }
     let keys = [];
     let re = pathToRegexp(topic, keys);
 
@@ -35,7 +41,7 @@ class Router {
 
     let t = keys.reduce((pre, key) => {
       return pre.replace(`:${key.name}?`, '#') // ? to #
-        .replace(`:${key.name}`, '+');
+                .replace(`:${key.name}`, '+');
     }, topic);
     return t;
   }
