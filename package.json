@@ -20,9 +20,9 @@
     "test"
   ],
   "keywords": [
+    "mosca",
     "mqtt",
-    "router",
-    "mosca"
+    "router"
   ],
   "license": "MIT",
   "main": "index.js",
@@ -31,7 +31,8 @@
     "url": "git@github.com:Jxck/moustique.git"
   },
   "scripts": {
-    "build": "babel src --out-dir build",
+    "build": "babel src --out-dir build/src",
+    "clean": "rm -rf build/*",
     "prepublish": "npm run build",
     "test": "npm run build && babel test --out-dir build/test && node build/test"
   }
