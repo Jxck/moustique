@@ -1,5 +1,5 @@
 // build via npm run build before use
-module.exports = require('./build/client');
+module.exports = require('./build/src/client');
 
 var Logger = require('logmorphic').Logger;
 
