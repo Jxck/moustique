@@ -9,9 +9,13 @@ class Router {
     if (typeof topic !== 'string') {
       throw new TypeError('topic should be string');
     }
+    if (topic === '') {
+      throw new TypeError('topic should no be empty');
+    }
     if (typeof callback !== 'function') {
       throw new TypeError('callback function required');
     }
+
     let keys = [];
     let re = pathToRegexp(topic, keys);
 
@@ -47,6 +51,13 @@ class Router {
   }
 
   route(topic, message) {
+    if (typeof topic !== 'string') {
+      throw new TypeError('topic should be string');
+    }
+    if (topic === '') {
+      throw new TypeError('topic should no be empty');
+    }
+
     for (let i = 0; i < this.routings.length; i ++) {
       let routing = this.routings[i];
       let result = routing(topic, message);

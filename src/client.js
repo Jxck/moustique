@@ -8,6 +8,7 @@ class Client extends EventEmitter {
     this.appname = appname;
     this.username = username;
     this.router = new Router();
+    this.connection = null;
   }
 
   connect(url = `wss://${location.hostname}:3000`, option = {}) {

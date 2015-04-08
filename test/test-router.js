@@ -167,27 +167,6 @@ function match() {
       },
       message: 'test'
     },
-    {
-      sub: '',
-      pub: '',
-      params: {
-      },
-      message: 'test'
-    },
-    {
-      sub: '/',
-      pub: '',
-      params: {
-      },
-      message: 'test'
-    },
-    {
-      sub: '',
-      pub: '/',
-      params: {
-      },
-      message: 'test'
-    },
   ];
 
   let count = 0;
@@ -235,9 +214,9 @@ function unmatch() {
 function error() {
   let router = new Router();
 
-  [null, undefined, {}, 1, NaN, function(){}].forEach((topic) => {
+  ['', null, undefined, {}, 1, NaN, function(){}].forEach((topic) => {
     try {
-      router.topic(null, () => {});
+      router.topic(topic, () => {});
       throw new Error('cant be here');
     } catch(err) {
       assert(err instanceof TypeError, true);
@@ -252,6 +231,13 @@ function error() {
       assert(err instanceof TypeError, true);
     }
   });
+
+  try {
+    router.route('', 'test');
+    throw new Error('cant be here');
+  } catch(err) {
+    assert(err instanceof TypeError, true);
+  }
 }
 
 function run() {
