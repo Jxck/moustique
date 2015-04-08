@@ -12,6 +12,12 @@ class Client extends EventEmitter {
 
   connect(url = `wss://${location.hostname}:3000`, option = {}) {
     option.clientId = this.username;
+    let will = option.will;
+    console.assert(will.topic[0] !== '/', 'topic should not start with /');
+    option.will = {
+      topic: `/${this.appname}/${will.topic}`,
+      payload: JSON.stringify(will.payload)
+    };
     this.connection = mqtt.connect(url, option);
     this.bindEvents();
   }
