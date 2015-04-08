@@ -5,14 +5,54 @@ function assert(actual, expected) {
   console.assert(actual === expected, '\nact: ' + actual + '\nexp: ' + expected);
 }
 
-function test1() {
-};
+function error() {
+  // new
+  ['', null, undefined, {}, 1, NaN, function(){}].forEach((v) => {
+    try {
+      new Client(v, 'a');
+      throw new Error('cant be here');
+    } catch(err) {
+      assert(err instanceof TypeError, true);
+    }
+  });
 
-function test2() {
+  ['', null, undefined, {}, 1, NaN, function(){}].forEach((v) => {
+    try {
+      new Client('a', v);
+      throw new Error('cant be here');
+    } catch(err) {
+      assert(err instanceof TypeError, true);
+    }
+  });
+
+  let client = new Client('a', 'b');
+
+  // connect
+  try {
+    client.connect('ws://example.com', { will: { topic: '/a', payload: '' }});
+    throw new Error('cant be here');
+  } catch(err) {
+    assert(err instanceof TypeError, true);
+  }
+
+  // sub
+  try {
+    client.sub('/a', ()=>{});
+    throw new Error('cant be here');
+  } catch(err) {
+    assert(err instanceof TypeError, true);
+  }
+
+  // pub
+  try {
+    client.pub('/a', '');
+    throw new Error('cant be here');
+  } catch(err) {
+    assert(err instanceof TypeError, true);
+  }
 };
 
 function run() {
-  test1();
-  test2();
+  error();
 };
 run();

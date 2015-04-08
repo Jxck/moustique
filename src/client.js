@@ -5,6 +5,22 @@ import {Router} from './router';
 
 class Client extends EventEmitter {
   constructor(appname, username) {
+    if (typeof appname !== 'string') {
+      throw new TypeError('appname should be string');
+    }
+
+    if (appname === '') {
+      throw new TypeError('appname should not be empty string');
+    }
+
+    if (typeof username !== 'string') {
+      throw new TypeError('username should be string');
+    }
+
+    if (username === '') {
+      throw new TypeError('username should not be empty string');
+    }
+
     this.appname = appname;
     this.username = username;
     this.router = new Router();
@@ -13,18 +29,22 @@ class Client extends EventEmitter {
 
   connect(url = `wss://${location.hostname}:3000`, option = {}) {
     option.clientId = this.username;
-    let will = option.will;
-    console.assert(will.topic[0] !== '/', 'topic should not start with /');
-    option.will = {
-      topic: `/${this.appname}/${will.topic}`,
-      payload: JSON.stringify(will.payload)
-    };
+
+    if (option.will) {
+      let will = option.will;
+      if (will.topic[0] === '/') throw new TypeError('topic should not start with /');
+      option.will = {
+        topic: `/${this.appname}/${will.topic}`,
+        payload: JSON.stringify(will.payload)
+      };
+    }
+
     this.connection = mqtt.connect(url, option);
     this.bindEvents();
   }
 
   sub(topic, callback) {
-    console.assert(topic[0] !== '/', 'topic should not start with /');
+    if (topic[0] === '/') throw new TypeError('topic should not start with /');
     let topic = `/${this.appname}/${topic}`;
     logger.info('add handler to', topic);
     let t = this.router.topic(topic, callback);
@@ -33,7 +53,7 @@ class Client extends EventEmitter {
   }
 
   pub(topic, data, option = { qos: 0, retain: false }) {
-    console.assert(topic[0] !== '/', 'topic should not start with /');
+    if (topic[0] === '/') throw new TypeError('topic should not start with /');
     let topic = `/${this.appname}/${topic}`;
     logger.info('publish', topic, data, option);
     let message = JSON.stringify(data);
